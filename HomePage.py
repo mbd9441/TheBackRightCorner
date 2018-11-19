@@ -44,7 +44,15 @@ class homepage:
             print(orderdict)
             field=0
             for key, value in orderdict.items():
-                self.currentfield=tkinter.Label(self.displayorders,text=value).grid(row=i+1, column=field)
+                if key == 'tracking':
+                    print(value)
+                    self.trackingbutton=tkinter.Button(self.displayorders,text=value, command=lambda value=value:self.window.order_page(value))
+                    self.trackingbutton.grid(row=i+1, column=field, sticky=tkinter.EW)
+                else:
+                    self.currentfield=tkinter.Label(self.displayorders,text=value).grid(row=i+1, column=field)
                 field+=1
             
         self.displayorders.pack(fill=tkinter.X)
+
+    def orderbutton(self,orderid):
+        self.window.order_page(orderid)

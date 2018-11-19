@@ -1,4 +1,4 @@
-import tkinter, DBConnector, LoginPage, HomePage, SettingsPage
+import tkinter, DBConnector, LoginPage, HomePage, SettingsPage, OrderPage
 """""
     A bunch of bullshit
 """
@@ -7,6 +7,7 @@ class PackagingApp:
     frame=None
     dbconnector=None
     userdict=None
+
     def __init__(self, master):
         master = master
         master.title("Packaging App")
@@ -46,13 +47,20 @@ class PackagingApp:
         homepage=HomePage.homepage(self)
         homepage.home_page()
 
+    def order_page(self, orderid):
+        self.clear()
+        print("packagingapp orderid " + orderid)
+        self.header(back=orderid)
+        orderpage=OrderPage.orderpage(self)
+        orderpage.order_page(orderid)
+
     def settings_page(self):
         self.clear()
         self.header()
         settingspage=SettingsPage.settingspage(self)
         settingspage.settings_page()
     
-    def header(self):
+    def header(self, **keyword_parameters):
         self.headerframe=tkinter.Frame(self.frame, background='#9a7958')
 
         self.logout_button=tkinter.Button(self.headerframe, text="Logout", command=lambda:self.login_page(), background='#9a7958', activebackground='#7c6247')
@@ -63,6 +71,10 @@ class PackagingApp:
 
         self.settings=tkinter.Button(self.headerframe, text="Orders", command=lambda:self.home_page(), background='#9a7958', activebackground='#7c6247')
         self.settings.pack(side=tkinter.LEFT)
+
+        if ('back' in keyword_parameters):
+            self.settings=tkinter.Button(self.headerframe, text="Back", command=lambda:self.home_page(), background='#9a7958', activebackground='#7c6247')
+            self.settings.pack(side=tkinter.LEFT)
 
         self.label = tkinter.Label(self.headerframe, text=self.userdict['email'], background=self.headerframe.cget('background'))
         self.label.pack(side=tkinter.RIGHT)
