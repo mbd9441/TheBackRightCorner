@@ -51,16 +51,19 @@ class loginpage:
         userresult = self.window.dbconnector.makequery("SELECT email, isemployee FROM account WHERE email='%s'" % (user_text,))
         print(userresult)
 
-        if userresult is None:
-            self.errorcode.set("Email not found")
-        else:
-            self.window.userdict={
-                'email': userresult[0][0],
-                'isemployee': userresult[0][1]
-            }
-            print(self.window.userdict)
-            passresult=self.window.dbconnector.makequery("SELECT password FROM account WHERE email='%s'" % (user_text,))
-            if pass_text==passresult[0][0]:
-                self.window.home_page()
+        if type(userresult)==list:
+            if not userresult:
+                self.errorcode.set("Email not found")
             else:
-                self.errorcode.set("Invalid Password")
+                self.window.userdict={
+                    'email': userresult[0][0],
+                    'isemployee': userresult[0][1]
+                }
+                print(self.window.userdict)
+                passresult=self.window.dbconnector.makequery("SELECT password FROM account WHERE email='%s'" % (user_text,))
+                if pass_text==passresult[0][0]:
+                    self.window.home_page()
+                else:
+                    self.errorcode.set("Invalid Password")
+        else:
+            self.errorcode.set("Unexpected input")
