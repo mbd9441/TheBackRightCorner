@@ -13,24 +13,26 @@ class loginpage:
     Returns: N/A
     """
     def login_page(self):
-        self.window.clear()
+        self.subwindow=tkinter.Frame(self.window.frame, background=self.window.frame.cget('background'))
 
-        self.label = tkinter.Label(self.window.frame, text="Login").grid(row=0, columnspan=2)
+        self.label = tkinter.Label(self.subwindow, text="Login", font=("Courier", 40, 'bold'), background=self.subwindow.cget('background')).grid(row=0, columnspan=2)
 
-        self.enter_user_label = tkinter.Label(self.window.frame, text="Email:").grid(row=1, column=0)
+        self.enter_user_label = tkinter.Label(self.subwindow, text="Email:", anchor=tkinter.W, background='#9a7958').grid(row=1, column=0, sticky=tkinter.EW)
 
-        self.enter_user = tkinter.Entry(self.window.frame)
+        self.enter_user = tkinter.Entry(self.subwindow)
         self.enter_user.grid(row=1, column=1)
 
-        self.enter_pass_label = tkinter.Label(self.window.frame, text="Password:").grid(row=2, column=0)
+        self.enter_pass_label = tkinter.Label(self.subwindow, text="Password:", anchor=tkinter.W, background='#9a7958').grid(row=2, column=0, sticky=tkinter.EW)
 
-        self.enter_pass = tkinter.Entry(self.window.frame)
+        self.enter_pass = tkinter.Entry(self.subwindow)
         self.enter_pass.grid(row=2, column=1)
 
-        self.loginbutton = tkinter.Button(self.window.frame, text="Submit", command=self.login_loginbutton).grid(row=3, columnspan=2)
+        self.loginbutton = tkinter.Button(self.subwindow, text="Submit", background='#9a7958', activebackground='#7c6247', command=self.login_loginbutton).grid(row=3, columnspan=2)
 
         self.errorcode=tkinter.StringVar()
-        self.error_label = tkinter.Label(self.window.frame, textvariable=self.errorcode, fg='Red').grid(row=4, columnspan=2)
+        self.error_label = tkinter.Label(self.subwindow, textvariable=self.errorcode, fg='Red', background=self.subwindow.cget('background')).grid(row=4, columnspan=2)
+
+        self.subwindow.pack()
 
     """
     login_loginbutton()
@@ -52,13 +54,13 @@ class loginpage:
         if userresult is None:
             self.errorcode.set("Email not found")
         else:
-            userdict={
-                'email': userresult[0],
-                'isemployee': userresult[1]
+            self.window.userdict={
+                'email': userresult[0][0],
+                'isemployee': userresult[0][1]
             }
-            print(userdict)
+            print(self.window.userdict)
             passresult=self.window.dbconnector.makequery("SELECT password FROM account WHERE email='%s'" % (user_text,))
-            if pass_text==passresult[0]:
-                self.window.home_page(userdict)
+            if pass_text==passresult[0][0]:
+                self.window.home_page()
             else:
                 self.errorcode.set("Invalid Password")

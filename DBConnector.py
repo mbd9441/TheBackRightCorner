@@ -17,7 +17,7 @@ class dbconnector:
         print(query)
         cursor = self.connection.cursor()
         cursor.execute(query)
-        result = cursor.fetchone()
+        result = cursor.fetchall()
         cursor.close()
         return result
 
