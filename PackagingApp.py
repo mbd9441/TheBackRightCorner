@@ -7,6 +7,9 @@ class PackagingApp:
     frame=None
     dbconnector=None
     userdict=None
+    lightcolor='#c29661'
+    darkcolor='#9a7958'
+    darkercolor='#7c6247'
 
     def __init__(self, master):
         master = master
@@ -17,8 +20,8 @@ class PackagingApp:
 
         self.dbconnector=DBConnector.dbconnector()
 
-        self.frame = tkinter.Frame(self.master, background='#c29661')
-        self.frame.pack(fill=tkinter.BOTH)
+        self.frame = tkinter.Frame(self.master, background=self.lightcolor)
+        self.frame.pack(fill=tkinter.BOTH, expand=True)
 
         self.login_page()
 
@@ -61,22 +64,22 @@ class PackagingApp:
         settingspage.settings_page()
     
     def header(self, **keyword_parameters):
-        self.headerframe=tkinter.Frame(self.frame, background='#9a7958')
+        self.headerframe=tkinter.Frame(self.frame, background=self.darkcolor)
 
-        self.logout_button=tkinter.Button(self.headerframe, text="Logout", command=lambda:self.login_page(), background='#9a7958', activebackground='#7c6247')
+        self.logout_button=tkinter.Button(self.headerframe, text="Logout", command=lambda:self.login_page(), background=self.darkcolor, activebackground=self.darkercolor)
         self.logout_button.pack(side=tkinter.LEFT)
 
-        self.settings=tkinter.Button(self.headerframe, text="Settings", command=lambda:self.settings_page(), background='#9a7958', activebackground='#7c6247')
+        self.settings=tkinter.Button(self.headerframe, text="Settings", command=lambda:self.settings_page(), background=self.darkcolor, activebackground=self.darkercolor)
         self.settings.pack(side=tkinter.LEFT)
 
-        self.settings=tkinter.Button(self.headerframe, text="Orders", command=lambda:self.home_page(), background='#9a7958', activebackground='#7c6247')
+        self.settings=tkinter.Button(self.headerframe, text="Orders", command=lambda:self.home_page(), background=self.darkcolor, activebackground=self.darkercolor)
         self.settings.pack(side=tkinter.LEFT)
 
         if ('back' in keyword_parameters):
-            self.settings=tkinter.Button(self.headerframe, text="Back", command=lambda:self.home_page(), background='#9a7958', activebackground='#7c6247')
+            self.settings=tkinter.Button(self.headerframe, text="Back", command=lambda:self.home_page(), background=self.darkcolor, activebackground=self.darkercolor)
             self.settings.pack(side=tkinter.LEFT)
 
-        self.label = tkinter.Label(self.headerframe, text=self.userdict['email'], background=self.headerframe.cget('background'))
+        self.label = tkinter.Label(self.headerframe, text=self.userdict['email'], background=self.darkcolor)
         self.label.pack(side=tkinter.RIGHT)
 
         self.headerframe.pack(fill=tkinter.X)
