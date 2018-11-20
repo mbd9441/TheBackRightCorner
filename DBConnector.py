@@ -21,5 +21,16 @@ class dbconnector:
         cursor.close()
         return result
 
+    def querydictlist(self, query, columns):
+        queryresult = self.makequery(query)
+        queryarray=[]
+        for i in range(0,len(queryresult)):
+            row = queryresult[i]
+            rowdict={}
+            for j in range(0,len(row)):
+                rowdict[columns[j]]=str(row[j])
+            queryarray.append(rowdict)
+        return queryarray
+
     def __exit__(self, exc_type, exc_value, traceback):
         self.connection.close()

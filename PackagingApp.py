@@ -1,4 +1,4 @@
-import tkinter, DBConnector, LoginPage, HomePage, SettingsPage, OrderPage
+import tkinter, DBConnector, LoginPage, ListView, SettingsPage, OrderPage
 """""
     A bunch of bullshit
 """
@@ -14,7 +14,7 @@ class PackagingApp:
     def __init__(self, master):
         master = master
         master.title("Packaging App")
-        master.geometry("400x300")
+        master.geometry("500x300")
         master.resizable(0,0)
         master.configure(background='#c29661')
 
@@ -47,15 +47,21 @@ class PackagingApp:
     def home_page(self):
         self.clear()
         self.header()
-        homepage=HomePage.homepage(self)
-        homepage.home_page()
+        title="Orders"
+        columns = ['Tracking #','Delivery Date','Status','Total']
+        query = "select tracking_number, date, status, status from shipping_order WHERE account_ID =(SELECT id from account where account.email ='%s');" % (self.userdict['email'])
+        dictlist=self.dbconnector.querydictlist(query, columns)
+        homepage=ListView.listview(self, title, columns, dictlist)
 
     def order_page(self, orderid):
         self.clear()
-        print("packagingapp orderid " + orderid)
         self.header(back=orderid)
-        orderpage=OrderPage.orderpage(self)
-        orderpage.order_page(orderid)
+        title="Order %s" % str(orderid)
+        columns = []
+        query = ''
+        #dictlist=self.dbconnector.querydictlist(query, columns)
+        dictlist={}
+        homepage=ListView.listview(self, title, columns, dictlist)
 
     def settings_page(self):
         self.clear()
