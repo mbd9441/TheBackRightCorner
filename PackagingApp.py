@@ -1,4 +1,4 @@
-import tkinter, DBConnector, LoginPage, ListView, SettingsPage, OrderPage
+import tkinter, DBConnector, LoginPage, ListView, SettingsPage
 """""
     A bunch of bullshit
 """
@@ -57,7 +57,7 @@ class PackagingApp:
         self.clear()
         self.header(back=orderid)
         title="Order %s" % str(orderid)
-        columns = []
+        columns = ['Package','Delivery Date','Status','Total']
         query = ''
         #dictlist=self.dbconnector.querydictlist(query, columns)
         dictlist={}
