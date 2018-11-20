@@ -49,7 +49,7 @@ class PackagingApp:
         self.header()
         title="Orders"
         columns = ['Tracking #','Delivery Date','Status','Total']
-        query = "select tracking_number, date, status, status from shipping_order WHERE account_ID =(SELECT id from account where account.email ='%s');" % (self.userdict['email'])
+        query = "select tracking_number, date, status, 0 from shipping_order WHERE account_ID =(SELECT id from account where account.email ='%s');" % (self.userdict['email'])
         dictlist=self.dbconnector.querydictlist(query, columns)
         homepage=ListView.listview(self, title, columns, dictlist)
 
@@ -58,10 +58,17 @@ class PackagingApp:
         self.header(back=orderid)
         title="Order %s" % str(orderid)
         columns = ['Package','Delivery Date','Status','Total']
-        query = ''
-        #dictlist=self.dbconnector.querydictlist(query, columns)
-        dictlist={}
-        homepage=ListView.listview(self, title, columns, dictlist)
+        query = "select id, delivery_date, 'false' as status, cost+shipping_cost as total from package where \"shipping_order.tracking_number\"=%s;" % orderid
+        dictlist=self.dbconnector.querydictlist(query, columns)
+        orderpage=ListView.listview(self, title, columns, dictlist, orderid=orderid)
+    
+    def package_page(self, packageid, orderid):
+        self.clear()
+        self.header(back=orderid)
+        title="Package %s" % str(packageid)
+        columns=[]
+        dictlist=[]
+        packagepage=ListView.listview(self, title, columns, dictlist)
 
     def settings_page(self):
         self.clear()

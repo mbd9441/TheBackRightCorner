@@ -16,11 +16,12 @@ class listview:
         columns - a list of columns to generate, array
         dictlist - a list of dictionaries containing all rows and fields from a query, array of dictionaries
     """
-    def __init__(self, window, title, columns, dictlist):
+    def __init__(self, window, title, columns, dictlist, orderid=None):
         self.window=window
         self.columns=columns
         self.dictlist=dictlist
         self.subwindow=tkinter.Frame(self.window.frame, background=self.window.lightcolor)
+        self.orderid=orderid
 
         self.label = tkinter.Label(self.subwindow, text=title, background=self.window.lightcolor, font=("Courier", 20, 'bold'))
         self.label.pack(fill=tkinter.X)
@@ -57,10 +58,16 @@ class listview:
 
         for i in range(0, len(dictlist)):
             field=0
+            print(dictlist[i])
             for key, value in dictlist[i].items():
                 if key == self.columns[0]:
-                    self.trackingbutton=tkinter.Button(self.scrollframe,text=value, background=self.window.lightcolor, activebackground=self.window.darkcolor, command=lambda value=value:self.window.order_page(value))
-                    self.trackingbutton.grid(row=i+1, column=field, sticky=tkinter.NSEW)
+                    link=None
+                    if key == "Tracking #":
+                        link = lambda value=value:self.window.order_page(value)
+                    elif key == "Package":
+                        link = lambda value=value:self.window.package_page(value, self.orderid)
+                    self.linkbutton=tkinter.Button(self.scrollframe,text=value, background=self.window.lightcolor, activebackground=self.window.darkcolor, command=link)
+                    self.linkbutton.grid(row=i+1, column=field, sticky=tkinter.NSEW)
                 else:
                     self.currentfield=tkinter.Label(self.scrollframe,text=value, background=self.window.lightcolor).grid(row=i+1, column=field, sticky=tkinter.NSEW)
                 field+=1
