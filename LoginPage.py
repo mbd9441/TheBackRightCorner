@@ -17,17 +17,17 @@ class loginpage:
 
         self.label = tkinter.Label(self.subwindow, text="Login", font=("Courier", 40, 'bold'), background=self.window.lightcolor).grid(row=0, columnspan=2)
 
-        self.enter_user_label = tkinter.Label(self.subwindow, text="Email:", anchor=tkinter.W, background=self.window.darkcolor).grid(row=1, column=0, sticky=tkinter.EW)
+        self.enter_user_label = tkinter.Label(self.subwindow, text="Email:", anchor=tkinter.W, font=("Arial", 10, 'bold'), background=self.window.darkcolor).grid(row=1, column=0, sticky=tkinter.EW)
 
         self.enter_user = tkinter.Entry(self.subwindow)
         self.enter_user.grid(row=1, column=1)
 
-        self.enter_pass_label = tkinter.Label(self.subwindow, text="Password:", anchor=tkinter.W, background=self.window.darkcolor).grid(row=2, column=0, sticky=tkinter.EW)
+        self.enter_pass_label = tkinter.Label(self.subwindow, text="Password:", anchor=tkinter.W, font=("Arial", 10, 'bold'), background=self.window.darkcolor).grid(row=2, column=0, sticky=tkinter.EW)
 
         self.enter_pass = tkinter.Entry(self.subwindow)
         self.enter_pass.grid(row=2, column=1)
 
-        self.loginbutton = tkinter.Button(self.subwindow, text="Submit", background=self.window.darkcolor, activebackground=self.window.darkercolor, command=self.login_loginbutton).grid(row=3, columnspan=2)
+        self.loginbutton = tkinter.Button(self.subwindow, text="Submit", font=("Arial", 10, 'bold'), background=self.window.darkcolor, activebackground=self.window.darkercolor, command=self.login_loginbutton).grid(row=3, columnspan=2)
 
         self.errorcode=tkinter.StringVar()
         self.error_label = tkinter.Label(self.subwindow, textvariable=self.errorcode, fg='Red', background=self.window.lightcolor).grid(row=4, columnspan=2)

@@ -66,20 +66,20 @@ class PackagingApp:
     def header(self, **keyword_parameters):
         self.headerframe=tkinter.Frame(self.frame, background=self.darkcolor)
 
-        self.logout_button=tkinter.Button(self.headerframe, text="Logout", command=lambda:self.login_page(), background=self.darkcolor, activebackground=self.darkercolor)
+        self.logout_button=tkinter.Button(self.headerframe, text="Logout", command=lambda:self.login_page(), font=("Arial", 10, 'bold'), background=self.darkcolor, activebackground=self.darkercolor)
         self.logout_button.pack(side=tkinter.LEFT)
 
-        self.settings=tkinter.Button(self.headerframe, text="Settings", command=lambda:self.settings_page(), background=self.darkcolor, activebackground=self.darkercolor)
+        self.settings=tkinter.Button(self.headerframe, text="Settings", command=lambda:self.settings_page(), font=("Arial", 10, 'bold'), background=self.darkcolor, activebackground=self.darkercolor)
         self.settings.pack(side=tkinter.LEFT)
 
-        self.settings=tkinter.Button(self.headerframe, text="Orders", command=lambda:self.home_page(), background=self.darkcolor, activebackground=self.darkercolor)
+        self.settings=tkinter.Button(self.headerframe, text="Orders", command=lambda:self.home_page(), font=("Arial", 10, 'bold'), background=self.darkcolor, activebackground=self.darkercolor)
         self.settings.pack(side=tkinter.LEFT)
 
         if ('back' in keyword_parameters):
-            self.settings=tkinter.Button(self.headerframe, text="Back", command=lambda:self.home_page(), background=self.darkcolor, activebackground=self.darkercolor)
+            self.settings=tkinter.Button(self.headerframe, text="Back", command=lambda:self.home_page(), font=("Arial", 10, 'bold'), background=self.darkcolor, activebackground=self.darkercolor)
             self.settings.pack(side=tkinter.LEFT)
 
-        self.label = tkinter.Label(self.headerframe, text=self.userdict['email'], background=self.darkcolor)
+        self.label = tkinter.Label(self.headerframe, text=self.userdict['email'], font=("Arial", 10, 'bold'), background=self.darkcolor)
         self.label.pack(side=tkinter.RIGHT)
 
         self.headerframe.pack(fill=tkinter.X)
