@@ -1,4 +1,4 @@
-import tkinter, DBConnector, LoginPage, ListView, SettingsPage
+import tkinter, DBConnector, LoginPage, ListView, SettingsPage, DictView
 """""
     A bunch of bullshit
 """
@@ -7,6 +7,7 @@ class PackagingApp:
     frame=None
     dbconnector=None
     userdict=None
+    columns=[]
     lightcolor='#c29661'
     darkcolor='#9a7958'
     darkercolor='#7c6247'
@@ -48,27 +49,29 @@ class PackagingApp:
         self.clear()
         self.header()
         title="Orders"
-        columns = ['Tracking #','Delivery Date','Status','Total']
+        self.columns = ['Tracking #','Delivery Date','Status','Total']
         query = "select tracking_number, date, status, 0 from shipping_order WHERE account_ID =(SELECT id from account where account.email ='%s');" % (self.userdict['email'])
-        dictlist=self.dbconnector.querydictlist(query, columns)
-        homepage=ListView.listview(self, title, columns, dictlist)
+        dictlist=self.dbconnector.querydictlist(query, self.columns)
+        homepage=ListView.listview(self, title, self.columns, dictlist)
 
-    def order_page(self, orderid):
+    def order_page(self, orderid, dictlist):
         self.clear()
-        self.header(back=orderid)
+        self.header(back=orderid, type='order', dictlist=dictlist)
+        print("dictlist here " + str(dictlist))
+        self.footer(dictlist=dictlist)
         title="Order %s" % str(orderid)
-        columns = ['Package','Delivery Date','Status','Total']
+        self.columns = ['Package','Delivery Date','Status','Total']
         query = "select id, delivery_date, 'false' as status, cost+shipping_cost as total from package where \"shipping_order.tracking_number\"=%s;" % orderid
-        dictlist=self.dbconnector.querydictlist(query, columns)
-        orderpage=ListView.listview(self, title, columns, dictlist, orderid=orderid)
+        dictlist=self.dbconnector.querydictlist(query, self.columns)
+        orderpage=ListView.listview(self, title, self.columns, dictlist, orderid=orderid)
     
-    def package_page(self, packageid, orderid):
+    def package_page(self, packageid, tracking, dictlist):
         self.clear()
-        self.header(back=orderid)
+        self.header(back=tracking, type='package', dictlist=dictlist)
         title="Package %s" % str(packageid)
-        columns=[]
+        self.columns=[]
         dictlist=[]
-        packagepage=ListView.listview(self, title, columns, dictlist)
+        packagepage=DictView.dictview(self, title)
 
     def settings_page(self):
         self.clear()
@@ -77,6 +80,7 @@ class PackagingApp:
         settingspage.settings_page()
     
     def header(self, **keyword_parameters):
+        link=None
         self.headerframe=tkinter.Frame(self.frame, background=self.darkcolor)
 
         self.logout_button=tkinter.Button(self.headerframe, text="Logout", command=lambda:self.login_page(), font=("Arial", 10, 'bold'), background=self.darkcolor, activebackground=self.darkercolor)
@@ -89,13 +93,39 @@ class PackagingApp:
         self.settings.pack(side=tkinter.LEFT)
 
         if ('back' in keyword_parameters):
-            self.settings=tkinter.Button(self.headerframe, text="Back", command=lambda:self.home_page(), font=("Arial", 10, 'bold'), background=self.darkcolor, activebackground=self.darkercolor)
+            back = keyword_parameters['back']
+            if keyword_parameters['type'] == 'order':
+                link=lambda:self.home_page()
+            elif keyword_parameters['type'] == 'package':
+                if ('dictlist' in keyword_parameters):
+                    link=lambda link=link:self.order_page(back, keyword_parameters['dictlist'])
+            self.settings=tkinter.Button(self.headerframe, text="Back", command=link, font=("Arial", 10, 'bold'), background=self.darkcolor, activebackground=self.darkercolor)
             self.settings.pack(side=tkinter.LEFT)
 
         self.label = tkinter.Label(self.headerframe, text=self.userdict['email'], font=("Arial", 10, 'bold'), background=self.darkcolor)
         self.label.pack(side=tkinter.RIGHT)
 
         self.headerframe.pack(fill=tkinter.X)
+
+    def footer(self, **keyword_parameters):
+        dictlist=None
+        if ('dictlist' in keyword_parameters):
+            dictlist=keyword_parameters['dictlist']
+            print('dictlist ' + str(dictlist))
+        self.headerwrapperpadding=tkinter.Frame(self.frame, background=self.lightcolor)
+        self.headerwrapper=tkinter.Frame(self.headerwrapperpadding, background=self.lightcolor)
+
+        i=0
+        for key, value in dictlist.items():
+            if key == "Tracking #":
+                self.currentfield=tkinter.Label(self.headerwrapper,text='', background=self.lightcolor).grid(row=0, column=i, sticky=tkinter.NSEW)
+            else:
+                self.currentfield=tkinter.Label(self.headerwrapper,text=value, background=self.lightcolor).grid(row=0, column=i, sticky=tkinter.NSEW)
+            self.headerwrapper.grid_columnconfigure(i, weight=1, uniform="standard")
+            i+=1
+
+        self.headerwrapper.pack(fill=tkinter.X, padx=(0,17))
+        self.headerwrapperpadding.pack(side=tkinter.BOTTOM, fill=tkinter.X, padx=10)
 
 root = tkinter.Tk()
 window = PackagingApp(root)

@@ -16,12 +16,14 @@ class listview:
         columns - a list of columns to generate, array
         dictlist - a list of dictionaries containing all rows and fields from a query, array of dictionaries
     """
-    def __init__(self, window, title, columns, dictlist, orderid=None):
+    def __init__(self, window, title, columns, dictlist, **keyword_parameters):
         self.window=window
         self.columns=columns
         self.dictlist=dictlist
         self.subwindow=tkinter.Frame(self.window.frame, background=self.window.lightcolor)
-        self.orderid=orderid
+        self.orderid=None
+        if ('orderid' in keyword_parameters):
+            self.orderid=keyword_parameters['orderid']
 
         self.label = tkinter.Label(self.subwindow, text=title, background=self.window.lightcolor, font=("Courier", 20, 'bold'))
         self.label.pack(fill=tkinter.X)
@@ -63,9 +65,9 @@ class listview:
                 if key == self.columns[0]:
                     link=None
                     if key == "Tracking #":
-                        link = lambda value=value:self.window.order_page(value)
+                        link = lambda value=value:self.window.order_page(value, dictlist[i])
                     elif key == "Package":
-                        link = lambda value=value:self.window.package_page(value, self.orderid)
+                        link = lambda value=value:self.window.package_page(value, self.orderid, dictlist[i])
                     self.linkbutton=tkinter.Button(self.scrollframe,text=value, background=self.window.lightcolor, activebackground=self.window.darkcolor, command=link)
                     self.linkbutton.grid(row=i+1, column=field, sticky=tkinter.NSEW)
                 else:
