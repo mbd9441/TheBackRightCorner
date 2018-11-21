@@ -54,24 +54,28 @@ class PackagingApp:
         dictlist=self.dbconnector.querydictlist(query, self.columns)
         homepage=ListView.listview(self, title, self.columns, dictlist)
 
-    def order_page(self, orderid, dictlist):
+    def order_page(self, orderid):
         self.clear()
-        self.header(back=orderid, type='order', dictlist=dictlist)
-        print("dictlist here " + str(dictlist))
-        self.footer(dictlist=dictlist)
+        self.header(back=orderid)
         title="Order %s" % str(orderid)
         self.columns = ['Package','Delivery Date','Status','Total']
+
+        footerquery = "select tracking_number, date, status, 0 from shipping_order WHERE account_ID = %s;" % orderid
+        footerdictlist=self.dbconnector.querydictlist(footerquery, self.columns)[0]
+        self.footer(footerdictlist=footerdictlist)
+
         query = "select id, delivery_date, 'false' as status, cost+shipping_cost as total from package where \"shipping_order.tracking_number\"=%s;" % orderid
         dictlist=self.dbconnector.querydictlist(query, self.columns)
         orderpage=ListView.listview(self, title, self.columns, dictlist, orderid=orderid)
     
-    def package_page(self, packageid, tracking, dictlist):
+    def package_page(self, packageid, orderid):
         self.clear()
-        self.header(back=tracking, type='package', dictlist=dictlist)
+        self.header(back=orderid)
         title="Package %s" % str(packageid)
-        self.columns=[]
-        dictlist=[]
-        packagepage=DictView.dictview(self, title)
+        self.columns=['Total', 'Cost', 'Shipping Cost', 'International', 'Hazardous']
+        query = "select cost + shipping_cost as total, cost, shipping_cost, international, hazardous from package where \"shipping_order.tracking_number\"=%s;" % packageid
+        dictlist=self.dbconnector.querydictlist(query, self.columns)
+        packagepage=DictView.dictview(self, title, dictlist)
 
     def settings_page(self):
         self.clear()
@@ -93,12 +97,11 @@ class PackagingApp:
         self.settings.pack(side=tkinter.LEFT)
 
         if ('back' in keyword_parameters):
-            back = keyword_parameters['back']
-            if keyword_parameters['type'] == 'order':
+            if (keyword_parameters['back'][0]=='order'):
+                orderid=keyword_parameters['back'][1]
+                link=lambda orderid=orderid:self.order_page(orderid)
+            else:
                 link=lambda:self.home_page()
-            elif keyword_parameters['type'] == 'package':
-                if ('dictlist' in keyword_parameters):
-                    link=lambda link=link:self.order_page(back, keyword_parameters['dictlist'])
             self.settings=tkinter.Button(self.headerframe, text="Back", command=link, font=("Arial", 10, 'bold'), background=self.darkcolor, activebackground=self.darkercolor)
             self.settings.pack(side=tkinter.LEFT)
 
@@ -108,16 +111,16 @@ class PackagingApp:
         self.headerframe.pack(fill=tkinter.X)
 
     def footer(self, **keyword_parameters):
-        dictlist=None
-        if ('dictlist' in keyword_parameters):
-            dictlist=keyword_parameters['dictlist']
-            print('dictlist ' + str(dictlist))
+        footerdictlist=None
+        if ('footerdictlist' in keyword_parameters):
+            footerdictlist=keyword_parameters['footerdictlist']
+            print('footerdictlist ' + str(footerdictlist))
         self.headerwrapperpadding=tkinter.Frame(self.frame, background=self.lightcolor)
         self.headerwrapper=tkinter.Frame(self.headerwrapperpadding, background=self.lightcolor)
 
         i=0
-        for key, value in dictlist.items():
-            if key == "Tracking #":
+        for key, value in footerdictlist.items():
+            if key == "Package":
                 self.currentfield=tkinter.Label(self.headerwrapper,text='', background=self.lightcolor).grid(row=0, column=i, sticky=tkinter.NSEW)
             else:
                 self.currentfield=tkinter.Label(self.headerwrapper,text=value, background=self.lightcolor).grid(row=0, column=i, sticky=tkinter.NSEW)

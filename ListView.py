@@ -22,8 +22,11 @@ class listview:
         self.dictlist=dictlist
         self.subwindow=tkinter.Frame(self.window.frame, background=self.window.lightcolor)
         self.orderid=None
+        self.orderdict=None
         if ('orderid' in keyword_parameters):
             self.orderid=keyword_parameters['orderid']
+        if ('orderdict' in keyword_parameters):
+            self.orderid=keyword_parameters['orderdict']
 
         self.label = tkinter.Label(self.subwindow, text=title, background=self.window.lightcolor, font=("Courier", 20, 'bold'))
         self.label.pack(fill=tkinter.X)
@@ -31,7 +34,7 @@ class listview:
         if self.window.userdict['isemployee']:
             pass
         else:
-            self.build_list_view(self.dictlist)
+            self.build_list_view()
 
         self.subwindow.pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=True)
 
@@ -44,7 +47,7 @@ class listview:
     returns:
         N/A
     """
-    def build_list_view(self, dictlist):
+    def build_list_view(self):
         self.headerwrapperpadding=tkinter.Frame(self.subwindow, background=self.window.darkcolor)
         self.headerwrapper=tkinter.Frame(self.headerwrapperpadding, background=self.window.darkcolor)
 
@@ -58,16 +61,16 @@ class listview:
             self.scrollframe.grid_columnconfigure(col, weight=1, uniform="standard")
             self.headerwrapper.grid_columnconfigure(col, weight=1, uniform="standard")
 
-        for i in range(0, len(dictlist)):
+        for i in range(0, len(self.dictlist)):
             field=0
-            print(dictlist[i])
-            for key, value in dictlist[i].items():
+            print(self.dictlist[i])
+            for key, value in self.dictlist[i].items():
                 if key == self.columns[0]:
                     link=None
                     if key == "Tracking #":
-                        link = lambda value=value:self.window.order_page(value, dictlist[i])
+                        link = lambda value=value:self.window.order_page(value)
                     elif key == "Package":
-                        link = lambda value=value:self.window.package_page(value, self.orderid, dictlist[i])
+                        link = lambda value=value:self.window.package_page(value, ['order',self.orderid])
                     self.linkbutton=tkinter.Button(self.scrollframe,text=value, background=self.window.lightcolor, activebackground=self.window.darkcolor, command=link)
                     self.linkbutton.grid(row=i+1, column=field, sticky=tkinter.NSEW)
                 else:
