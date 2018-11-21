@@ -1,4 +1,4 @@
-import tkinter, DBConnector, LoginPage, ListView, SettingsPage, DictView
+import tkinter, DBConnector, LoginPage, ListView, SettingsPage
 """""
     A bunch of bullshit
 """
@@ -11,6 +11,7 @@ class PackagingApp:
     lightcolor='#c29661'
     darkcolor='#9a7958'
     darkercolor='#7c6247'
+    gray='#a0a0a0'
 
     def __init__(self, master):
         master = master
@@ -72,10 +73,10 @@ class PackagingApp:
         self.clear()
         self.header(back=orderid)
         title="Package %s" % str(packageid)
-        self.columns=['Total', 'Cost', 'Shipping Cost', 'International', 'Hazardous']
-        query = "select cost + shipping_cost as total, cost, shipping_cost, international, hazardous from package where \"shipping_order.tracking_number\"=%s;" % packageid
+        self.columns=['Cost', 'Shipping Cost', 'Total', 'International', 'Hazardous']
+        query = "select cost, shipping_cost, cost + shipping_cost as total, international, hazardous from package where id=%s;" % packageid
         dictlist=self.dbconnector.querydictlist(query, self.columns)
-        packagepage=DictView.dictview(self, title, dictlist)
+        packagepage=ListView.listview(self, title, self.columns, dictlist)
 
     def settings_page(self):
         self.clear()

@@ -34,7 +34,10 @@ class listview:
         if self.window.userdict['isemployee']:
             pass
         else:
-            self.build_list_view()
+            if ('Package' in title):
+                self.build_dict_view()
+            else:
+                self.build_list_view()
 
         self.subwindow.pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=True)
 
@@ -51,13 +54,13 @@ class listview:
         self.headerwrapperpadding=tkinter.Frame(self.subwindow, background=self.window.darkcolor)
         self.headerwrapper=tkinter.Frame(self.headerwrapperpadding, background=self.window.darkcolor)
 
-        self.displayorders=tkinter.Frame(self.subwindow)
-        self.scrollbar=tkinter.Scrollbar(self.displayorders, background=self.window.darkcolor)
+        self.displaylist=tkinter.Frame(self.subwindow)
+        self.scrollbar=tkinter.Scrollbar(self.displaylist, background=self.window.darkcolor)
         self.scrollbar.pack(side=tkinter.RIGHT, fill=tkinter.Y)
-        self.scrollframe=tkinter.Listbox(self.displayorders, yscrollcommand=self.scrollbar.set, highlightthickness=0, background=self.window.darkcolor)
+        self.scrollframe=tkinter.Listbox(self.displaylist, background=self.window.darkcolor, yscrollcommand=self.scrollbar.set, highlightthickness=0, borderwidth=2, relief=tkinter.SUNKEN)
 
         for col in range(0, len(self.columns)):
-            self.tracking=tkinter.Label(self.headerwrapper,text=self.columns[col], background=self.window.darkcolor, font=("Arial", 10, 'bold')).grid(row=0,column=col, sticky=tkinter.EW)
+            self.headers=tkinter.Label(self.headerwrapper, text=self.columns[col], background=self.window.darkcolor, font=("Arial", 10, 'bold')).grid(row=0,column=col, sticky=tkinter.EW)
             self.scrollframe.grid_columnconfigure(col, weight=1, uniform="standard")
             self.headerwrapper.grid_columnconfigure(col, weight=1, uniform="standard")
 
@@ -71,14 +74,28 @@ class listview:
                         link = lambda value=value:self.window.order_page(value)
                     elif key == "Package":
                         link = lambda value=value:self.window.package_page(value, ['order',self.orderid])
-                    self.linkbutton=tkinter.Button(self.scrollframe,text=value, background=self.window.lightcolor, activebackground=self.window.darkcolor, command=link)
+                    self.linkbutton=tkinter.Button(self.scrollframe,text=value, activebackground=self.window.gray, command=link) 
                     self.linkbutton.grid(row=i+1, column=field, sticky=tkinter.NSEW)
                 else:
-                    self.currentfield=tkinter.Label(self.scrollframe,text=value, background=self.window.lightcolor).grid(row=i+1, column=field, sticky=tkinter.NSEW)
+                    self.currentfield=tkinter.Label(self.scrollframe,text=value).grid(row=i+1, column=field, sticky=tkinter.NSEW)
                 field+=1
 
         self.scrollframe.pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=True)
         self.scrollbar.config(command=self.scrollframe.yview)
         self.headerwrapper.pack(fill=tkinter.X, padx=(0,17))
         self.headerwrapperpadding.pack(side=tkinter.TOP, fill=tkinter.X, padx=10)
-        self.displayorders.pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=True, padx=10, pady=(0,10))
+        self.displaylist.pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=True, padx=10, pady=(0,10))
+
+    def build_dict_view(self):
+        self.displaylist=tkinter.Frame(self.subwindow, background=self.window.darkcolor, relief=tkinter.SUNKEN, borderwidth=2)
+
+        self.displaylist.grid_columnconfigure(0, weight=1)
+        self.displaylist.grid_columnconfigure(1, weight=2)
+
+        field=0
+        for key, value in self.dictlist[0].items():
+            self.currentfield=tkinter.Label(self.displaylist, text=key, background=self.window.darkcolor, anchor=tkinter.W, font=("Arial", 10, 'bold')).grid(row=field, column=0, sticky=tkinter.NSEW)
+            self.currentfield=tkinter.Label(self.displaylist, text=value, anchor=tkinter.E).grid(row=field, column=1, sticky=tkinter.NSEW)
+            field+=1
+
+        self.displaylist.pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=True, padx=10, pady=(0,10))
