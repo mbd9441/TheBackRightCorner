@@ -24,7 +24,7 @@ class loginpage:
 
         self.enter_pass_label = tkinter.Label(self.subwindow, text="Password:", anchor=tkinter.W, font=("Arial", 10, 'bold'), background=self.window.darkcolor).grid(row=2, column=0, sticky=tkinter.EW)
 
-        self.enter_pass = tkinter.Entry(self.subwindow)
+        self.enter_pass = tkinter.Entry(self.subwindow, show="*")
         self.enter_pass.grid(row=2, column=1)
 
         self.loginbutton = tkinter.Button(self.subwindow, text="Submit", font=("Arial", 10, 'bold'), background=self.window.darkcolor, activebackground=self.window.darkercolor, command=self.login_loginbutton).grid(row=3, columnspan=2)
