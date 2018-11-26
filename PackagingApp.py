@@ -138,6 +138,15 @@ class PackagingApp:
         dictlist=self.dbconnector.querydictlist(query, self.columns)
         extraquerypage=ListView.listview(self,title,self.columns,dictlist)
 
+    def street_most_customers(self):
+        self.clear()
+        self.header(back='extraqueries')
+        title = "Street"
+        self.columns=['Street','City','Zip Code']
+        query = "select street, city, zip_code from street_most_customers()"
+        dictlist=self.dbconnector.querydictlist(query, self.columns)
+        extraquerypage=ListView.listview(self,title,self.columns,dictlist)
+
     def header(self, **keyword_parameters):
         link=None
         self.headerframe=tkinter.Frame(self.frame, background=self.darkcolor)

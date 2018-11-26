@@ -31,7 +31,7 @@ class listview:
         self.label = tkinter.Label(self.subwindow, text=title, background=self.window.lightcolor, font=("Courier", 20, 'bold'))
         self.label.pack(fill=tkinter.X)
 
-        if ('Package ' in title) or ('Settings' in title) or ('Customer' in title):
+        if ('Package ' in title) or ('Settings' in title) or ('Customer' in title) or ('Street' in title):
             self.build_dict_view()
         elif ('Extra' in title):
             self.extra_query_build()
@@ -103,7 +103,8 @@ class listview:
         self.displaylist.pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=True, padx=10, pady=(0,10))
 
     def extra_query_build(self):
-        desclist=['All packages on truck:','Last package delivered by truck:', 'Customer with most packages delivered in the past year:']
+        desclist=['All packages on truck:','Last package delivered by truck:', 
+        'Customer with most packages delivered in the past year:', 'Street with the most customers:']
 
         self.displaylist=tkinter.Frame(self.subwindow)
         self.headerwrapper=tkinter.Frame(self.subwindow, background=self.window.darkcolor)
@@ -132,6 +133,8 @@ class listview:
                     link=lambda entryfield=entryfield:self.crashed_truck_last_delivered(entryfield)
                 elif (currow==3):
                     link=self.window.customer_most_packages
+                elif (currow==4):
+                    link=self.window.street_most_customers
 
                 self.submit=tkinter.Button(self.displaylist, text='Submit', font=("Arial", 10, 'bold'), activebackground=self.window.gray, command=link)
                 self.desc.grid(row=currow, column=0, sticky=tkinter.NSEW)
