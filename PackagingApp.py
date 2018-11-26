@@ -167,6 +167,15 @@ class PackagingApp:
         dictlist=self.dbconnector.querydictlist(query, self.columns)
         extraquerypage=ListView.listview(self,title,self.columns,dictlist)
 
+    def most_shipping_spent(self):
+        self.clear()
+        self.header(back='extraqueries')
+        title = "Customer"
+        self.columns=['First Name','Last Name', 'Cost']
+        query = 'select account.first_name, account.last_name, most_shipping_spent.cost from most_shipping_spent() inner join account on account.id=most_shipping_spent.id'
+        dictlist=self.dbconnector.querydictlist(query, self.columns)
+        extraquerypage=ListView.listview(self,title,self.columns,dictlist)
+
     def header(self, **keyword_parameters):
         link=None
         self.headerframe=tkinter.Frame(self.frame, background=self.darkcolor)

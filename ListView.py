@@ -106,8 +106,8 @@ class listview:
         self.displaylist.pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=True, padx=10, pady=(0,10))
 
     def extra_query_build(self):
-        desclist=['All packages on truck:','Last package delivered by truck:', 
-        'Customer with most packages delivered in the past year:', 'Street with the most customers:']
+        desclist=['All packages on truck:','Last package delivered by truck:', 'Customer with most packages delivered in the past year:', 
+        'Street with the most customers:', 'Most spent on shipping:']
 
         self.displaylist=tkinter.Frame(self.subwindow)
         self.headerwrapper=tkinter.Frame(self.subwindow, background=self.window.darkcolor)
@@ -138,6 +138,8 @@ class listview:
                     link=self.window.customer_most_packages
                 elif (currow==4):
                     link=self.window.street_most_customers
+                elif (currow==5):
+                    link=self.window.most_shipping_spent
 
                 self.submit=tkinter.Button(self.displaylist, text='Submit', font=("Arial", 10, 'bold'), activebackground=self.window.gray, command=link)
                 self.desc.grid(row=currow, column=0, sticky=tkinter.NSEW)
