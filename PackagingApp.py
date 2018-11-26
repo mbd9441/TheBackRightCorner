@@ -97,7 +97,7 @@ class PackagingApp:
             dictlist[0]['Shipping Center']=self.userdict['shippingcenter']
             footer=self.footer(footerbutton='Extra Queries')
         else:
-            footer=self.footer(footerbutton='Credit Cards')
+            footer=self.footer(footerbutton='Settings')
         settingspage=ListView.listview(self, title, self.columns, dictlist)
 
     def credit_card_page(self):
@@ -106,6 +106,15 @@ class PackagingApp:
         title="Credit Cards"
         self.columns=['Card Number', 'Expiration Date']
         query= "select RIGHT(CAST(card_number as varchar), 4), expiration_date from credit_card where \"account.ID\" = %s" % (self.userdict['id'])
+        dictlist=self.dbconnector.querydictlist(query, self.columns)
+        creditcardpage=ListView.listview(self, title, self.columns, dictlist)
+
+    def address_page(self):
+        self.clear()
+        self.header(back='settings')
+        title="Addresses"
+        self.columns=['Number', 'Apartment', 'Street', 'Territory', 'State', 'Zip', 'Country']
+        query= "select number, apartment, street, city, territory, zip_code, country from address where \"account.ID\" = %s" % (self.userdict['id'])
         dictlist=self.dbconnector.querydictlist(query, self.columns)
         creditcardpage=ListView.listview(self, title, self.columns, dictlist)
 
@@ -204,15 +213,21 @@ class PackagingApp:
                     self.currentfield=tkinter.Label(self.headerwrapper,text=value, background=self.lightcolor).grid(row=0, column=i, sticky=tkinter.NSEW)
                 self.footerwrapper.grid_columnconfigure(i, weight=1, uniform="standard")
                 i+=1
+            self.footerwrapper.pack(fill=tkinter.X, padx=(0,17))
+            self.footerwrapperpadding.pack(side=tkinter.BOTTOM, fill=tkinter.X, padx=10, pady=(0,10))
+
         elif ('footerbutton' in keyword_parameters):
             if keyword_parameters['footerbutton']=='Extra Queries':
                 footerbutton=tkinter.Button(self.footerwrapper, text="Extra Queries", command=self.extra_queries, font=("Arial", 10, 'bold'), background=self.darkcolor, activebackground=self.darkercolor)
                 footerbutton.pack()
-            elif keyword_parameters['footerbutton']=='Credit Cards':
+            elif keyword_parameters['footerbutton']=='Settings':
                 footerbutton=tkinter.Button(self.footerwrapper, text="Credit Cards", command=self.credit_card_page, font=("Arial", 10, 'bold'), background=self.darkcolor, activebackground=self.darkercolor)
-                footerbutton.pack()
-        self.footerwrapper.pack(fill=tkinter.X, padx=(0,17))
-        self.footerwrapperpadding.pack(side=tkinter.BOTTOM, fill=tkinter.X, padx=10)
+                footerbutton.pack(side=tkinter.LEFT)
+                footerbutton=tkinter.Button(self.footerwrapper, text="Addresses", command=self.address_page, font=("Arial", 10, 'bold'), background=self.darkcolor, activebackground=self.darkercolor)
+                footerbutton.pack(side=tkinter.RIGHT)
+            self.footerwrapper.pack(fill=tkinter.X)
+            self.footerwrapperpadding.pack(side=tkinter.BOTTOM, fill=tkinter.X, padx=10, pady=(0,10))
+
 
 root = tkinter.Tk()
 window = PackagingApp(root)
