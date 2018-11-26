@@ -44,10 +44,6 @@ class loginpage:
     def login_loginbutton(self):
         user_text=self.enter_user.get()
         pass_text=self.enter_pass.get()
-
-        print(user_text)
-        print(pass_text)
-
         userresult = self.window.dbconnector.makequery("SELECT id, email, \"shipping_center.id\" FROM account WHERE email='%s'" % (user_text,))
         print(userresult)
 

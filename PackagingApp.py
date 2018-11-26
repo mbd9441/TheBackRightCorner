@@ -89,8 +89,13 @@ class PackagingApp:
     def settings_page(self):
         self.clear()
         self.header()
-        settingspage=SettingsPage.settingspage(self)
-        settingspage.settings_page()
+        title="Settings"
+        self.columns=['First Name','Last Name', 'Email', 'Phone']
+        query= "select first_name, last_name, email, phone_number from account where id = %s" % (self.userdict['id'])
+        dictlist=self.dbconnector.querydictlist(query, self.columns)
+        if self.userdict['shippingcenter'] is not None:
+            dictlist[0]['Shipping Center'] = self.userdict['shippingcenter']
+        settingspage=ListView.listview(self, title, self.columns, dictlist)
     
     def header(self, **keyword_parameters):
         link=None

@@ -31,7 +31,7 @@ class listview:
         self.label = tkinter.Label(self.subwindow, text=title, background=self.window.lightcolor, font=("Courier", 20, 'bold'))
         self.label.pack(fill=tkinter.X)
 
-        if ('Package ' in title):
+        if ('Package ' in title) or ('Settings' in title):
             self.build_dict_view()
         else:
             self.build_list_view()
