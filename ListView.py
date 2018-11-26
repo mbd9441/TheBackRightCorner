@@ -30,7 +30,6 @@ class listview:
             self.orderid=keyword_parameters['orderdict']
         if ('idbutton' in keyword_parameters):
             self.idbutton=keyword_parameters['idbutton']
-
         self.label = tkinter.Label(self.subwindow, text=title, background=self.window.lightcolor, font=("Courier", 20, 'bold'))
         self.label.pack(fill=tkinter.X)
 
@@ -67,7 +66,7 @@ class listview:
 
         for i in range(0, len(self.dictlist)):
             field=0
-            print(self.dictlist[i])
+            print(self.idbutton)
             for key, value in self.dictlist[i].items():
                 if (key == self.columns[0] and self.idbutton):
                     link=None

@@ -85,8 +85,8 @@ class PackagingApp:
         query = "select cost, shipping_cost, cost + shipping_cost as total, international, hazardous from package where id=%s;" % packageid
         dictlist=self.dbconnector.querydictlist(query, self.columns)[0]
         self.columns=['Shipping Center', 'Plane', 'Truck', 'Description', 'Updated']
-        packagetypequery = "select \"shipping_center.id\", \"plane.id\", \"truck.id\", description, time from curr_location(%s)" % packageid
-        dictlist2=self.dbconnector.querydictlist(packagetypequery, self.columns)[0]
+        packagequery = "select \"shipping_center.id\", \"plane.id\", \"truck.id\", description, time from curr_location(%s)" % packageid
+        dictlist2=self.dbconnector.querydictlist(packagequery, self.columns)[0]
         dictlist.update(dictlist2)
         if (dictlist['Shipping Center'] == 'None'):
             del dictlist['Shipping Center']
@@ -94,7 +94,17 @@ class PackagingApp:
             del dictlist['Plane']
         if (dictlist['Truck'] == 'None'):
             del dictlist['Truck']
+        footer=self.footer(package=packageid)
         packagepage=ListView.listview(self, title, self.columns, [dictlist])
+
+    def location_history_page(self, packageid):
+        self.clear()
+        self.header(back="package." + packageid)
+        title="Location History"
+        self.columns=['Shipping Center', 'Plane', 'Truck', 'Description', 'Updated']
+        query = "select \"shipping_center.id\", \"plane.id\", \"truck.id\", description, time from package_location where \"package.id\" = %s" % packageid
+        dictlist=self.dbconnector.querydictlist(query, self.columns)
+        locationpage=ListView.listview(self, title, self.columns, dictlist, idbutton=False)
 
     def settings_page(self):
         self.clear()
@@ -206,6 +216,11 @@ class PackagingApp:
                 link=lambda:self.extra_queries()
             elif (keyword_parameters['back'] == 'settings'):
                 link=lambda:self.settings_page()
+            elif ("package" in keyword_parameters['back']):
+                packageid=keyword_parameters['back'].split('.')[1]
+                query='select \"shipping_order.tracking_number\" from package where id=%s' % (packageid)
+                orderid=self.dbconnector.makequery(query)
+                link=lambda packageid=packageid:self.package_page(packageid, orderid)
             else:
                 orderid=keyword_parameters['back']
                 link=lambda orderid=orderid:self.order_page(orderid)
@@ -244,6 +259,13 @@ class PackagingApp:
                 footerbutton.pack(side=tkinter.LEFT)
                 footerbutton=tkinter.Button(self.footerwrapper, text="Addresses", command=self.address_page, font=("Arial", 10, 'bold'), background=self.darkcolor, activebackground=self.darkercolor)
                 footerbutton.pack(side=tkinter.RIGHT)
+            self.footerwrapper.pack(fill=tkinter.X)
+            self.footerwrapperpadding.pack(side=tkinter.BOTTOM, fill=tkinter.X, padx=10, pady=(0,10))
+        elif ('package' in keyword_parameters):
+            packageid=keyword_parameters['package']
+            link=lambda packageid=packageid:self.location_history_page(packageid)
+            footerbutton=tkinter.Button(self.footerwrapper, text="Location History", command=link, font=("Arial", 10, 'bold'), background=self.darkcolor, activebackground=self.darkercolor)
+            footerbutton.pack()
             self.footerwrapper.pack(fill=tkinter.X)
             self.footerwrapperpadding.pack(side=tkinter.BOTTOM, fill=tkinter.X, padx=10, pady=(0,10))
 
