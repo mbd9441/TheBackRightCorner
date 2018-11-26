@@ -242,9 +242,9 @@ class PackagingApp:
             i=0
             for key, value in footerdictlist.items():
                 if key == "Package":
-                    self.currentfield=tkinter.Label(self.headerwrapper,text='', background=self.lightcolor).grid(row=0, column=i, sticky=tkinter.NSEW)
+                    self.currentfield=tkinter.Label(self.footerwrapper,text='', background=self.lightcolor).grid(row=0, column=i, sticky=tkinter.NSEW)
                 else:
-                    self.currentfield=tkinter.Label(self.headerwrapper,text=value, background=self.lightcolor).grid(row=0, column=i, sticky=tkinter.NSEW)
+                    self.currentfield=tkinter.Label(self.footerwrapper,text=value, background=self.lightcolor).grid(row=0, column=i, sticky=tkinter.NSEW)
                 self.footerwrapper.grid_columnconfigure(i, weight=1, uniform="standard")
                 i+=1
             self.footerwrapper.pack(fill=tkinter.X, padx=(0,17))
