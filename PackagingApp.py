@@ -107,7 +107,7 @@ class PackagingApp:
         self.columns=['Card Number', 'Expiration Date']
         query= "select RIGHT(CAST(card_number as varchar), 4), expiration_date from credit_card where \"account.ID\" = %s" % (self.userdict['id'])
         dictlist=self.dbconnector.querydictlist(query, self.columns)
-        creditcardpage=ListView.listview(self, title, self.columns, dictlist)
+        creditcardpage=ListView.listview(self, title, self.columns, dictlist, idbutton=False)
 
     def address_page(self):
         self.clear()
@@ -116,7 +116,7 @@ class PackagingApp:
         self.columns=['Number', 'Apartment', 'Street', 'Territory', 'State', 'Zip', 'Country']
         query= "select number, apartment, street, city, territory, zip_code, country from address where \"account.ID\" = %s" % (self.userdict['id'])
         dictlist=self.dbconnector.querydictlist(query, self.columns)
-        creditcardpage=ListView.listview(self, title, self.columns, dictlist)
+        creditcardpage=ListView.listview(self, title, self.columns, dictlist, idbutton=False)
 
     def extra_queries(self):
         self.clear()

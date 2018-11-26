@@ -23,10 +23,13 @@ class listview:
         self.subwindow=tkinter.Frame(self.window.frame, background=self.window.lightcolor)
         self.orderid=None
         self.orderdict=None
+        self.idbutton=True
         if ('orderid' in keyword_parameters):
             self.orderid=keyword_parameters['orderid']
         if ('orderdict' in keyword_parameters):
             self.orderid=keyword_parameters['orderdict']
+        if ('idbutton' in keyword_parameters):
+            self.idbutton=keyword_parameters['idbutton']
 
         self.label = tkinter.Label(self.subwindow, text=title, background=self.window.lightcolor, font=("Courier", 20, 'bold'))
         self.label.pack(fill=tkinter.X)
@@ -66,7 +69,7 @@ class listview:
             field=0
             print(self.dictlist[i])
             for key, value in self.dictlist[i].items():
-                if key == self.columns[0]:
+                if (key == self.columns[0] and self.idbutton):
                     link=None
                     if key == "Tracking #":
                         link = lambda value=value:self.window.order_page(value)
