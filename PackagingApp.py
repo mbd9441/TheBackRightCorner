@@ -83,8 +83,18 @@ class PackagingApp:
         title="Package %s" % str(packageid)
         self.columns=['Cost', 'Shipping Cost', 'Total', 'International', 'Hazardous']
         query = "select cost, shipping_cost, cost + shipping_cost as total, international, hazardous from package where id=%s;" % packageid
-        dictlist=self.dbconnector.querydictlist(query, self.columns)
-        packagepage=ListView.listview(self, title, self.columns, dictlist)
+        dictlist=self.dbconnector.querydictlist(query, self.columns)[0]
+        self.columns=['Shipping Center', 'Plane', 'Truck', 'Description', 'Updated']
+        packagetypequery = "select \"shipping_center.id\", \"plane.id\", \"truck.id\", description, time from curr_location(%s)" % packageid
+        dictlist2=self.dbconnector.querydictlist(packagetypequery, self.columns)[0]
+        dictlist.update(dictlist2)
+        if (dictlist['Shipping Center'] == 'None'):
+            del dictlist['Shipping Center']
+        if (dictlist['Plane'] == 'None'):
+            del dictlist['Plane']
+        if (dictlist['Truck'] == 'None'):
+            del dictlist['Truck']
+        packagepage=ListView.listview(self, title, self.columns, [dictlist])
 
     def settings_page(self):
         self.clear()
