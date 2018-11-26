@@ -33,6 +33,8 @@ class listview:
 
         if ('Package ' in title) or ('Settings' in title):
             self.build_dict_view()
+        elif ('Extra' in title):
+            self.extra_query_build()
         else:
             self.build_list_view()
 
@@ -99,3 +101,6 @@ class listview:
             field+=1
 
         self.displaylist.pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=True, padx=10, pady=(0,10))
+
+    def extra_query_build(self):
+        pass

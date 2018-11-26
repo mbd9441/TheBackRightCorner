@@ -1,4 +1,4 @@
-import tkinter, DBConnector, LoginPage, ListView, SettingsPage
+import tkinter, DBConnector, LoginPage, ListView
 """""
     A bunch of bullshit
 """
@@ -94,9 +94,15 @@ class PackagingApp:
         query= "select first_name, last_name, email, phone_number from account where id = %s" % (self.userdict['id'])
         dictlist=self.dbconnector.querydictlist(query, self.columns)
         if self.userdict['shippingcenter'] is not None:
-            dictlist[0]['Shipping Center'] = self.userdict['shippingcenter']
+            footer=self.footer(footerbutton=True)
         settingspage=ListView.listview(self, title, self.columns, dictlist)
-    
+
+    def extra_queries(self):
+        self.clear()
+        self.header()
+        title="Extra Queries"
+        extraqueriespage=ListView.listview(self, title, [], [])
+
     def header(self, **keyword_parameters):
         link=None
         self.headerframe=tkinter.Frame(self.frame, background=self.darkcolor)
@@ -126,23 +132,25 @@ class PackagingApp:
 
     def footer(self, **keyword_parameters):
         footerdictlist=None
+        footerbutton=None
+        self.footerwrapperpadding=tkinter.Frame(self.frame, background=self.lightcolor)
+        self.footerwrapper=tkinter.Frame(self.footerwrapperpadding, background=self.lightcolor)
         if ('footerdictlist' in keyword_parameters):
             footerdictlist=keyword_parameters['footerdictlist']
-            print('footerdictlist ' + str(footerdictlist))
-        self.headerwrapperpadding=tkinter.Frame(self.frame, background=self.lightcolor)
-        self.headerwrapper=tkinter.Frame(self.headerwrapperpadding, background=self.lightcolor)
 
-        i=0
-        for key, value in footerdictlist.items():
-            if key == "Package":
-                self.currentfield=tkinter.Label(self.headerwrapper,text='', background=self.lightcolor).grid(row=0, column=i, sticky=tkinter.NSEW)
-            else:
-                self.currentfield=tkinter.Label(self.headerwrapper,text=value, background=self.lightcolor).grid(row=0, column=i, sticky=tkinter.NSEW)
-            self.headerwrapper.grid_columnconfigure(i, weight=1, uniform="standard")
-            i+=1
-
-        self.headerwrapper.pack(fill=tkinter.X, padx=(0,17))
-        self.headerwrapperpadding.pack(side=tkinter.BOTTOM, fill=tkinter.X, padx=10)
+            i=0
+            for key, value in footerdictlist.items():
+                if key == "Package":
+                    self.currentfield=tkinter.Label(self.headerwrapper,text='', background=self.lightcolor).grid(row=0, column=i, sticky=tkinter.NSEW)
+                else:
+                    self.currentfield=tkinter.Label(self.headerwrapper,text=value, background=self.lightcolor).grid(row=0, column=i, sticky=tkinter.NSEW)
+                self.footerwrapper.grid_columnconfigure(i, weight=1, uniform="standard")
+                i+=1
+        elif ('footerbutton' in keyword_parameters):
+            footerbutton=tkinter.Button(self.footerwrapper, text="Extra Queries", command=self.extra_queries, font=("Arial", 10, 'bold'), background=self.darkcolor, activebackground=self.darkercolor)
+            footerbutton.pack()
+        self.footerwrapper.pack(fill=tkinter.X, padx=(0,17))
+        self.footerwrapperpadding.pack(side=tkinter.BOTTOM, fill=tkinter.X, padx=10)
 
 root = tkinter.Tk()
 window = PackagingApp(root)
