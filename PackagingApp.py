@@ -111,12 +111,21 @@ class PackagingApp:
         self.columns=columns
         extraquerypage=ListView.listview(self,title,self.columns,dictlist)
 
-    def crashed_truck(self, truckid):
+    def crashed_truck_packages(self, truckid):
         self.clear()
         self.header(back='extraqueries')
         title = "Truck %s" % (truckid)
         self.columns=['Package ID', 'First Name', 'Last Name']
         query = "select * from truck_crash(%s)" % (truckid)
+        dictlist=self.dbconnector.querydictlist(query, self.columns)
+        extraquerypage=ListView.listview(self,title,self.columns,dictlist)
+
+    def crashed_truck_last_delivered(self, truckid):
+        self.clear()
+        self.header(back='extraqueries')
+        title = "Truck %s" % (truckid)
+        self.columns=['Package ID', 'Time']
+        query = "select \"package.id\", time from last_truck_delivery(%s)" % (truckid)
         dictlist=self.dbconnector.querydictlist(query, self.columns)
         extraquerypage=ListView.listview(self,title,self.columns,dictlist)
 
