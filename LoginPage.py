@@ -48,7 +48,7 @@ class loginpage:
         print(user_text)
         print(pass_text)
 
-        userresult = self.window.dbconnector.makequery("SELECT email, isemployee FROM account WHERE email='%s'" % (user_text,))
+        userresult = self.window.dbconnector.makequery("SELECT id, email, \"shipping_center.id\" FROM account WHERE email='%s'" % (user_text,))
         print(userresult)
 
         if type(userresult)==list:
@@ -56,8 +56,9 @@ class loginpage:
                 self.errorcode.set("Email not found")
             else:
                 self.window.userdict={
-                    'email': userresult[0][0],
-                    'isemployee': userresult[0][1]
+                    'id': userresult[0][0],
+                    'email': userresult[0][1],
+                    'shippingcenter': userresult[0][2]
                 }
                 print(self.window.userdict)
                 passresult=self.window.dbconnector.makequery("SELECT password FROM account WHERE email='%s'" % (user_text,))

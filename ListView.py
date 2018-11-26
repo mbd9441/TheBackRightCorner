@@ -31,13 +31,10 @@ class listview:
         self.label = tkinter.Label(self.subwindow, text=title, background=self.window.lightcolor, font=("Courier", 20, 'bold'))
         self.label.pack(fill=tkinter.X)
 
-        if self.window.userdict['isemployee']:
-            pass
+        if ('Package ' in title):
+            self.build_dict_view()
         else:
-            if ('Package' in title):
-                self.build_dict_view()
-            else:
-                self.build_list_view()
+            self.build_list_view()
 
         self.subwindow.pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=True)
 
@@ -56,8 +53,7 @@ class listview:
 
         self.displaylist=tkinter.Frame(self.subwindow)
         self.scrollbar=tkinter.Scrollbar(self.displaylist, background=self.window.darkcolor)
-        self.scrollbar.pack(side=tkinter.RIGHT, fill=tkinter.Y)
-        self.scrollframe=tkinter.Listbox(self.displaylist, background=self.window.darkcolor, yscrollcommand=self.scrollbar.set, highlightthickness=0, borderwidth=2, relief=tkinter.SUNKEN)
+        self.scrollframe=tkinter.Listbox(self.displaylist, background=self.window.darkcolor, highlightthickness=0, borderwidth=2, relief=tkinter.SUNKEN)
 
         for col in range(0, len(self.columns)):
             self.headers=tkinter.Label(self.headerwrapper, text=self.columns[col], background=self.window.darkcolor, font=("Arial", 10, 'bold')).grid(row=0,column=col, sticky=tkinter.EW)
@@ -73,18 +69,22 @@ class listview:
                     if key == "Tracking #":
                         link = lambda value=value:self.window.order_page(value)
                     elif key == "Package":
-                        link = lambda value=value:self.window.package_page(value, ['order',self.orderid])
+                        link = lambda value=value:self.window.package_page(value, self.orderid)
+                    elif key == "Package ID":
+                        link = lambda value=value:self.window.package_page(value, None)
                     self.linkbutton=tkinter.Button(self.scrollframe,text=value, activebackground=self.window.gray, command=link) 
                     self.linkbutton.grid(row=i+1, column=field, sticky=tkinter.NSEW)
                 else:
                     self.currentfield=tkinter.Label(self.scrollframe,text=value).grid(row=i+1, column=field, sticky=tkinter.NSEW)
                 field+=1
 
-        self.scrollframe.pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=True)
-        self.scrollbar.config(command=self.scrollframe.yview)
         self.headerwrapper.pack(fill=tkinter.X, padx=(0,17))
         self.headerwrapperpadding.pack(side=tkinter.TOP, fill=tkinter.X, padx=10)
+        self.scrollbar.pack(side=tkinter.RIGHT, fill=tkinter.Y)
+        self.scrollframe.pack(fill=tkinter.BOTH, expand=True)
         self.displaylist.pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=True, padx=10, pady=(0,10))
+        self.scrollbar.config(command=self.scrollframe.yview)
+        self.scrollframe.config(yscrollcommand=self.scrollbar.set)
 
     def build_dict_view(self):
         self.displaylist=tkinter.Frame(self.subwindow, background=self.window.darkcolor, relief=tkinter.SUNKEN, borderwidth=2)

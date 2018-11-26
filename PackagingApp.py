@@ -16,7 +16,7 @@ class PackagingApp:
     def __init__(self, master):
         master = master
         master.title("Packaging App")
-        master.geometry("500x300")
+        master.geometry("600x400")
         master.resizable(0,0)
         master.configure(background='#c29661')
 
@@ -49,15 +49,23 @@ class PackagingApp:
     def home_page(self):
         self.clear()
         self.header()
-        title="Orders"
-        self.columns = ['Tracking #','Delivery Date','Status','Total']
-        query = "select tracking_number, date, status, 0 from shipping_order WHERE account_ID =(SELECT id from account where account.email ='%s');" % (self.userdict['email'])
+        self.columns=None
+        title=''
+        query=''
+        if self.userdict['shippingcenter'] is not None:
+            title="Packages at %s" % (self.userdict['shippingcenter'])
+            self.columns = ['Package ID','Delivery Date', 'Updated', 'Location']
+            query = "select package.id, package.delivery_date, package_location.time, package_location.description from package inner join package_location on package.id = package_location.\"package.id\" where package_location.\"shipping_center.id\"= %s" % (self.userdict['shippingcenter'])
+        else:
+            title="Orders"
+            self.columns = ['Tracking #','Delivery Date','Status','Total']
+            query = "select tracking_number, date, status, 0 from shipping_order WHERE account_ID = %s" % (self.userdict['id'])
         dictlist=self.dbconnector.querydictlist(query, self.columns)
         homepage=ListView.listview(self, title, self.columns, dictlist)
 
     def order_page(self, orderid):
         self.clear()
-        self.header(back=orderid)
+        self.header(back=None)
         title="Order %s" % str(orderid)
         self.columns = ['Package','Delivery Date','Status','Total']
 
@@ -98,11 +106,11 @@ class PackagingApp:
         self.settings.pack(side=tkinter.LEFT)
 
         if ('back' in keyword_parameters):
-            if (keyword_parameters['back'][0]=='order'):
-                orderid=keyword_parameters['back'][1]
-                link=lambda orderid=orderid:self.order_page(orderid)
-            else:
+            if (keyword_parameters['back'] is None):
                 link=lambda:self.home_page()
+            else:
+                orderid=keyword_parameters['back']
+                link=lambda orderid=orderid:self.order_page(orderid)
             self.settings=tkinter.Button(self.headerframe, text="Back", command=link, font=("Arial", 10, 'bold'), background=self.darkcolor, activebackground=self.darkercolor)
             self.settings.pack(side=tkinter.LEFT)
 
