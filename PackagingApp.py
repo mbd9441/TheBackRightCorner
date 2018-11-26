@@ -94,6 +94,7 @@ class PackagingApp:
         query= "select first_name, last_name, email, phone_number from account where id = %s" % (self.userdict['id'])
         dictlist=self.dbconnector.querydictlist(query, self.columns)
         if self.userdict['shippingcenter'] is not None:
+            dictlist[0]['Shipping Center']=self.userdict['shippingcenter']
             footer=self.footer(footerbutton=True)
         settingspage=ListView.listview(self, title, self.columns, dictlist)
 
@@ -101,7 +102,23 @@ class PackagingApp:
         self.clear()
         self.header()
         title="Extra Queries"
-        extraqueriespage=ListView.listview(self, title, [], [])
+        self.columns=['Description', 'Parameter', 'Submit']
+        extraqueriespage=ListView.listview(self, title, self.columns, [])
+
+    def extra_query_page(self, title, columns, dictlist):
+        self.clear()
+        self.header(back='extraqueries')
+        self.columns=columns
+        extraquerypage=ListView.listview(self,title,self.columns,dictlist)
+
+    def crashed_truck(self, truckid):
+        self.clear()
+        self.header(back='extraqueries')
+        title = "Truck %s" % (truckid)
+        self.columns=['Package ID', 'First Name', 'Last Name']
+        query = "select 1, account.first_name, account.last_name from account where id in (select account_id from shipping_order where tracking_number in (select \"shipping_order.tracking_number\" from package where id in (select (truck_crash(%s)))))" % (truckid)
+        dictlist=self.dbconnector.querydictlist(query, self.columns)
+        extraquerypage=ListView.listview(self,title,self.columns,dictlist)
 
     def header(self, **keyword_parameters):
         link=None
@@ -119,6 +136,8 @@ class PackagingApp:
         if ('back' in keyword_parameters):
             if (keyword_parameters['back'] is None):
                 link=lambda:self.home_page()
+            elif (keyword_parameters['back'] == 'extraqueries'):
+                link=lambda:self.extra_queries()
             else:
                 orderid=keyword_parameters['back']
                 link=lambda orderid=orderid:self.order_page(orderid)
@@ -137,7 +156,6 @@ class PackagingApp:
         self.footerwrapper=tkinter.Frame(self.footerwrapperpadding, background=self.lightcolor)
         if ('footerdictlist' in keyword_parameters):
             footerdictlist=keyword_parameters['footerdictlist']
-
             i=0
             for key, value in footerdictlist.items():
                 if key == "Package":

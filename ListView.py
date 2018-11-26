@@ -74,7 +74,7 @@ class listview:
                         link = lambda value=value:self.window.package_page(value, self.orderid)
                     elif key == "Package ID":
                         link = lambda value=value:self.window.package_page(value, None)
-                    self.linkbutton=tkinter.Button(self.scrollframe,text=value, activebackground=self.window.gray, command=link) 
+                    self.linkbutton=tkinter.Button(self.scrollframe, text=value, activebackground=self.window.gray, command=link) 
                     self.linkbutton.grid(row=i+1, column=field, sticky=tkinter.NSEW)
                 else:
                     self.currentfield=tkinter.Label(self.scrollframe,text=value).grid(row=i+1, column=field, sticky=tkinter.NSEW)
@@ -103,4 +103,30 @@ class listview:
         self.displaylist.pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=True, padx=10, pady=(0,10))
 
     def extra_query_build(self):
-        pass
+        self.displaylist=tkinter.Frame(self.subwindow)
+        self.headerwrapper=tkinter.Frame(self.subwindow, background=self.window.darkcolor)
+        self.headerwrapper.grid_columnconfigure(0, weight=5, uniform='standard')
+        self.headerwrapper.grid_columnconfigure(1, weight=1, uniform='standard')
+        self.headerwrapper.grid_columnconfigure(2, weight=1, uniform='standard')
+        self.displaylist.grid_columnconfigure(0, weight=5, uniform='standard')
+        self.displaylist.grid_columnconfigure(1, weight=1, uniform='standard')
+        self.displaylist.grid_columnconfigure(2, weight=1, uniform='standard')
+
+        for col in range(0, len(self.columns)):
+            self.headers=tkinter.Label(self.headerwrapper, text=self.columns[col], background=self.window.darkcolor, font=("Arial", 10, 'bold')).grid(row=0,column=col, sticky=tkinter.EW)
+
+        self.desc=tkinter.Label(self.displaylist, text='Enter number of crashed truck', anchor=tkinter.W)
+        self.enter=tkinter.Entry(self.displaylist)
+        
+        self.submit=tkinter.Button(self.displaylist, text='Submit', font=("Arial", 10, 'bold'), activebackground=self.window.gray, command=self.crashed_truck)
+        self.desc.grid(row=1, column=0, sticky=tkinter.NSEW)
+        self.enter.grid(row=1, column=1, sticky=tkinter.NSEW)
+        self.submit.grid(row=1,column=2, stick=tkinter.NSEW)
+
+        self.headerwrapper.pack(side=tkinter.TOP, fill=tkinter.X, padx=10)
+        self.displaylist.pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=True, padx=10, pady=(0,10))
+
+    def crashed_truck(self):
+        enter=self.enter.get()
+        if (enter):
+            self.window.crashed_truck(enter)
