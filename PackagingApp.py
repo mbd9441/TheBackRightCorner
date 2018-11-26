@@ -116,7 +116,7 @@ class PackagingApp:
         self.header(back='extraqueries')
         title = "Truck %s" % (truckid)
         self.columns=['Package ID', 'First Name', 'Last Name']
-        query = "select 1, account.first_name, account.last_name from account where id in (select account_id from shipping_order where tracking_number in (select \"shipping_order.tracking_number\" from package where id in (select (truck_crash(%s)))))" % (truckid)
+        query = "select * from truck_crash(%s)" % (truckid)
         dictlist=self.dbconnector.querydictlist(query, self.columns)
         extraquerypage=ListView.listview(self,title,self.columns,dictlist)
 
