@@ -1,4 +1,4 @@
-import tkinter, DBConnector, LoginPage, ListView, UpdateView
+import tkinter, DBConnector, LoginPage, ListView, UpdateView, Receipt
 """""
     A bunch of bullshit
 """
@@ -86,7 +86,10 @@ class PackagingApp:
         query = "select id, delivery_date, 'false' as status, cost+shipping_cost as total from package where \"shipping_order.tracking_number\"=%s;" % orderid
         dictlist=self.dbconnector.querydictlist(query, self.columns)
         orderpage=ListView.listview(self, title, self.columns, dictlist, orderid=orderid)
-    
+
+    def receipt(self, orderid):
+        receipt = Receipt.receiptpage(orderid)
+
     def package_page(self, packageid, orderid):
         self.clear()
         self.header(back=orderid)
@@ -260,7 +263,8 @@ class PackagingApp:
             i=0
             for key, value in footerdictlist.items():
                 if key == "Package":
-                    self.currentfield=tkinter.Label(self.footerwrapper,text='', background=self.lightcolor).grid(row=0, column=i, sticky=tkinter.NSEW)
+                    link=lambda value=value:self.receipt(value)
+                    self.currentbutton=tkinter.Button(self.footerwrapper, text="Bill", command=link, font=("Arial", 10, 'bold'), background=self.darkcolor, activebackground=self.darkercolor).grid(row=0, column=i, sticky=tkinter.NSEW)
                 else:
                     self.currentfield=tkinter.Label(self.footerwrapper,text=value, background=self.lightcolor).grid(row=0, column=i, sticky=tkinter.NSEW)
                 self.footerwrapper.grid_columnconfigure(i, weight=1, uniform="standard")
