@@ -66,7 +66,6 @@ class listview:
 
         for i in range(0, len(self.dictlist)):
             field=0
-            print(self.idbutton)
             for key, value in self.dictlist[i].items():
                 if (key == self.columns[0] and self.idbutton):
                     link=None

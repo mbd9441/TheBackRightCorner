@@ -9,6 +9,7 @@ class dbconnector:
             print("Connection Successful")
         except:
             print("Connection Error")
+            exit()
     
     def __enter__(self):
         return self
@@ -20,6 +21,12 @@ class dbconnector:
         result = cursor.fetchall()
         cursor.close()
         return result
+
+    def insertquery(self, query):
+        print(query)
+        cursor = self.connection.cursor()
+        cursor.execute(query)
+        cursor.close()
 
     def querydictlist(self, query, columns):
         queryresult = self.makequery(query)
