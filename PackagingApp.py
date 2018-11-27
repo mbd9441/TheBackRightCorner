@@ -67,11 +67,21 @@ class PackagingApp:
         self.clear()
         self.header(back=None)
         title="Order %s" % str(orderid)
-        self.columns = ['Package','Delivery Date','Status','Total']
+        self.columns = ['Package','Delivery Date','Status']
 
-        footerquery = "select tracking_number, date, status, 0 from shipping_order WHERE account_ID = %s;" % (orderid)
+        footerquery = "select tracking_number, date, status from shipping_order WHERE account_ID = %s;" % (orderid)
         footerdictlist=self.dbconnector.querydictlist(footerquery, self.columns)
-        self.footer(footerdictlist=footerdictlist)
+
+        print(orderid)
+        ordertotalquery="select * from total_order_cost(%s)" % (orderid)
+        ordertotalresult=self.dbconnector.makequery(ordertotalquery)[0][0]
+        print(ordertotalresult)
+
+        footerdictlist[0]['Total']=ordertotalresult
+
+        self.columns.append('Total')
+
+        self.footer(footerdictlist=footerdictlist[0])
 
         query = "select id, delivery_date, 'false' as status, cost+shipping_cost as total from package where \"shipping_order.tracking_number\"=%s;" % orderid
         dictlist=self.dbconnector.querydictlist(query, self.columns)
