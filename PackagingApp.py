@@ -1,4 +1,4 @@
-import tkinter, DBConnector, LoginPage, ListView, UpdateView, Receipt
+import tkinter, DBConnector, LoginPage, ListView, UpdateView
 """""
     A bunch of bullshit
 """
@@ -92,7 +92,10 @@ class PackagingApp:
 
     def package_page(self, packageid, orderid):
         self.clear()
-        self.header(back=orderid)
+        if(self.userdict['shippingcenter']):
+            self.header(back=None)
+        else:
+            self.header(back=orderid)
         title="Package %s" % str(packageid)
         self.columns=['Cost', 'Shipping Cost', 'Total', 'International', 'Hazardous']
         query = "select cost, shipping_cost, cost + shipping_cost as total, international, hazardous from package where id=%s;" % packageid
@@ -231,6 +234,7 @@ class PackagingApp:
         self.settings.pack(side=tkinter.LEFT)
 
         if ('back' in keyword_parameters):
+            print('back: ' + str(keyword_parameters['back']))
             if (keyword_parameters['back'] is None):
                 link=lambda:self.home_page()
             elif (keyword_parameters['back'] == 'extraqueries'):
@@ -240,7 +244,7 @@ class PackagingApp:
             elif ("package" in keyword_parameters['back']):
                 packageid=keyword_parameters['back'].split('.')[1]
                 query='select \"shipping_order.tracking_number\" from package where id=%s' % (packageid)
-                orderid=self.dbconnector.makequery(query)
+                orderid=str(self.dbconnector.makequery(query)[0][0])
                 link=lambda packageid=packageid:self.package_page(packageid, orderid)
             else:
                 orderid=keyword_parameters['back']
@@ -283,6 +287,7 @@ class PackagingApp:
                 footerbutton.pack(side=tkinter.RIGHT)
             elif keyword_parameters['footerbutton']=='Update Location':
                 packageid=keyword_parameters['package']
+                print(packageid)
                 link=lambda packageid=packageid:self.update_location(packageid)
                 footerbutton=tkinter.Button(self.footerwrapper, text="Update Location", command=link, font=("Arial", 10, 'bold'), background=self.darkcolor, activebackground=self.darkercolor)
                 footerbutton.pack()
@@ -290,6 +295,7 @@ class PackagingApp:
             self.footerwrapperpadding.pack(side=tkinter.BOTTOM, fill=tkinter.X, padx=10, pady=(0,10))
         elif ('package' in keyword_parameters):
             packageid=keyword_parameters['package']
+            print(packageid)
             link=lambda packageid=packageid:self.location_history_page(packageid)
             footerbutton=tkinter.Button(self.footerwrapper, text="Location History", command=link, font=("Arial", 10, 'bold'), background=self.darkcolor, activebackground=self.darkercolor)
             footerbutton.pack()
