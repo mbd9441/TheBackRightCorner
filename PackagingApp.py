@@ -88,7 +88,7 @@ class PackagingApp:
         orderpage=ListView.listview(self, title, self.columns, dictlist, orderid=orderid)
 
     def receipt(self, orderid):
-        receipt = Receipt.receiptpage(orderid)
+        receipt = Receipt.receiptpage(self, orderid)
 
     def package_page(self, packageid, orderid):
         self.clear()
